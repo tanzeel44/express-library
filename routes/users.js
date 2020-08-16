@@ -1,9 +1,13 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.send('Respond with a resource');
+});
+
+router.get('/axe', (req, res, next) => {
+  res.send('There is no team in Axe!!!');
 });
 
 module.exports = router;
