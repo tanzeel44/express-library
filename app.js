@@ -1,19 +1,19 @@
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const catalogRouter = require('./routes/catalog');
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
+let catalogRouter = require('./routes/catalog');
 
-const app = express();
+let app = express();
 
-const mongoose = require('mongoose');
-const mongoDB = 'mongodb+srv://admin:sawaasdqwe@cluster0.agog3.azure.mongodb.net/<dbname>?retryWrites=true&w=majority';
+let mongoose = require('mongoose');
+let mongoDB = 'mongodb+srv://admin:sawaasdqwe@cluster0.agog3.azure.mongodb.net/<dbname>?retryWrites=true&w=majority';
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-const db = mongoose.connection;
+let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error'));
 
 // view engine setup
