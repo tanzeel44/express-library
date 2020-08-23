@@ -54,7 +54,7 @@ exports.book_detail = (req, res, next) => {
   }, (err, results) => {
     if (err) return next(err);
     if (results.book === null) {
-      let err = new Error('Book not found');
+      const err = new Error('Book not found');
       err.status = 404;
       return next(err);
     }
@@ -67,7 +67,7 @@ exports.book_create_get = (req, res, next) => {
   async.parallel({
     authors: callback => {Author.find(callback);},
     genres: callback => {Genre.find(callback);}
-  }, function(err, results) {
+  }, (err, results) => {
     if (err) return next(err);
     res.render('book_form', {title: 'Add Book', authors: results.authors, genres: results.genres});
   });
@@ -99,7 +99,7 @@ exports.book_create_post = [
     const errors = validator.validationResult(req);
 
     // Create book object with clean data
-    let book = new Book({
+    const book = new Book({
       title: req.body.title,
       author: req.body.author,
       summary: req.body.summary,
@@ -113,7 +113,7 @@ exports.book_create_post = [
       async.parallel({
         authors: callback => {Author.find(callback);},
         genres: callback => {Genre.find(callback);}
-      }, function(err, results) {
+      }, (err, results) => {
         if (err) return next(err);
 
         // Mark selected genres as checked
@@ -128,7 +128,7 @@ exports.book_create_post = [
     }
     else {
       // Data from form is valid
-      book.save(function(err) {
+      book.save(err => {
         if (err) return next(err);
         res.redirect(book.url);
       });
@@ -143,10 +143,10 @@ exports.book_update_get = (req, res, next) => {
     book: callback => {Book.findById(req.params.id).populate('author').populate('genre').exec(callback)},
     authors: callback => {Author.find(callback)},
     genres: callback => {Genre.find(callback)}
-  }, function(err, results) {
+  }, (err, results) => {
     if (err) return next(err);
     if (results.book == null) {
-      let err = new Error('Book not found');
+      const err = new Error('Book not found');
       err.status = 404;
       return next(err);
     }
@@ -191,7 +191,7 @@ exports.book_update_post = [
   (req, res, next) => {
     const errors = validator.validationResult(req);
 
-    let book = new Book({
+    const book = new Book({
       title: req.body.title,
       author: req.body.author,
       summary: req.body.summary,
@@ -204,7 +204,7 @@ exports.book_update_post = [
       async.parallel({
         authors: callback => {Author.find(callback)},
         genres: callback => {Genre.find(callback)}
-      }, function(err, results) {
+      }, (err, results) => {
         if (err) return next(err);
         // Mark selected genres as checked
         for (let i = 0; i < results.genres.length; ++i) {
@@ -216,9 +216,9 @@ exports.book_update_post = [
       });
       return;
     } else {
-      Book.findByIdAndUpdate(req.params.id, book, {}, function(err, thebook) {
+      Book.findByIdAndUpdate(req.params.id, book, {}, (err, thisBook) => {
         if (err) return next(err);
-        res.redirect(thebook.url);
+        res.redirect(thisBook.url);
       });
     }
   },
@@ -229,7 +229,7 @@ exports.book_delete_get = (req, res, next) => {
   async.parallel({
     book: callback => {Book.findById(req.params.id).populate('author').populate('genre').exec(callback)},
     book_instances: callback => {BookInstance.find({'book': req.params.id}).exec(callback)}
-  }, function(err, results) {
+  }, (err, results) => {
     if (err) return next(err);
     if (results.book == null) res.redirect('/catalog/books');
     res.render('book_delete', {title: 'Delete Book', book: results.book, book_instances: results.book_instances});
@@ -241,13 +241,13 @@ exports.book_delete_post = (req, res) => {
   async.parallel({
     book: callback => {Book.findById(req.body.id).populate('author').populate('genre').exec(callback)},
     book_instances: callback => {BookInstance.find({'book': req.body.id}).exec(callback)}
-  }, function (err, results) {
+  }, (err, results) => {
     if (err) return next(err);
     if (results.book_instances.length > 0) {
       res.render('book_delete', {title: 'Delete Book', book: results.book, book_instances: results.book_instances});
       return;
     } else {
-      Book.findByIdAndRemove(req.body.id, function deleteBook(err) {
+      Book.findByIdAndRemove(req.body.id, err => {
         if (err) return next(err);
         res.redirect('/catalog/books');
       });

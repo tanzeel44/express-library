@@ -18,10 +18,10 @@ exports.bookinstance_list = (req, res, next) => {
 exports.bookinstance_detail = (req, res, next) => {
   BookInstance.findById(req.params.id)
     .populate('book')
-    .exec(function(err, bookinstance) {
+    .exec((err, bookinstance) => {
       if (err) return next(err);
       if (bookinstance == null) {
-        let err = new Error('Book copy not found.');
+        const err = new Error('Book copy not found.');
         err.status = 404;
         return next(err);
       }
@@ -53,7 +53,7 @@ exports.bookinstance_create_post = [
 
   // Process req after validation/sanitization
   (req, res, next) => {
-    let bookinstance = new BookInstance({
+    const bookinstance = new BookInstance({
       book: req.body.book,
       imprint: req.body.imprint,
       status: req.body.status,
@@ -62,14 +62,14 @@ exports.bookinstance_create_post = [
 
     if (!errors.isEmpty()) {
       Book.find({}, 'title')
-        .exec(function(err, books) {
+        .exec((err, books) => {
           if (err) return next(err);
           res.render('bookinstance_form', {title: 'Add Book Instance', book_list: books, selected_book: bookinstance.book_id, errors: errors.array(), bookinstance: bookinstance});
         });
         return;
     } else {
       // form data valid
-      bookinstance.save(function(err) {
+      bookinstance.save(err => {
         if (err) return next(err);
         res.redirect(bookinstance.url);
       });
@@ -81,7 +81,7 @@ exports.bookinstance_create_post = [
 exports.bookinstance_delete_get = (req, res, next) => {
   BookInstance.findById(req.params.id)
     .populate('book')
-    .exec(function(err, bookinstance) {
+    .exec((err, bookinstance) => {
       if (err) return next(err);
       if (bookinstance == null) res.redirect('/catalog/bookinstances');
       res.render('bookinstance_delete', {title: 'Delete Book Instance', bookinstance: bookinstance});
@@ -90,7 +90,7 @@ exports.bookinstance_delete_get = (req, res, next) => {
 
 // Handle BookInstance delete on POST.
 exports.bookinstance_delete_post = (req, res, next) => {
-  BookInstance.findByIdAndRemove(req.body.id, function delteBookInstance(err) {
+  BookInstance.findByIdAndRemove(req.body.id, err => {
     if (err) return next(err);
     res.redirect('/catalog/bookinstances');
   });
@@ -101,10 +101,10 @@ exports.bookinstance_update_get = (req, res, next) => {
   async.parallel({
     bookinstance: callback => {BookInstance.findById(req.params.id).populate('book').exec(callback)},
     books: callback => {Book.find(callback)} 
-  }, function(err, results) {
+  }, (err, results) => {
     if (err) return next(err);
     if (results.bookinstance == null) {
-      let err = new Error('Book instance not found');
+      const err = new Error('Book instance not found');
       err.status = 404;
       return next(err);
     }
@@ -128,7 +128,7 @@ exports.bookinstance_update_post = [
   // Handle
   (req, res, next) => {
     const errors = validator.validationResult(req);
-    let bookinstance = new BookInstance({
+    const bookinstance = new BookInstance({
       book: req.body.book,
       imprint: req.body.imprint,
       status: req.body.status,
@@ -138,13 +138,13 @@ exports.bookinstance_update_post = [
 
     if (!errors.isEmpty()) {
       Book.find({}, 'title')
-        .exec(function (err, books) {
+        .exec((err, books) => {
           if (err) return next(err);
           res.render('bookinstance_form', {title: 'Update Book Instance', book_list: books, selected_book: bookinstance.book._id, errors: errors.array(), bookinstance: bookinstance});
         });
         return;
     } else {
-      BookInstance.findByIdAndUpdate(req.params.id, bookinstance, {}, function(err, thisBookInstance) {
+      BookInstance.findByIdAndUpdate(req.params.id, bookinstance, {}, (err, thisBookInstance) => {
         res.redirect(thisBookInstance.url);
       });
     }
