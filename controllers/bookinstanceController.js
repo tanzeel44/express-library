@@ -53,6 +53,8 @@ exports.bookinstance_create_post = [
 
   // Process req after validation/sanitization
   (req, res, next) => {
+    const errors = validator.validationResult(req);
+    
     const bookinstance = new BookInstance({
       book: req.body.book,
       imprint: req.body.imprint,
