@@ -14,29 +14,22 @@ let AuthorSchema = new Schema(
 
 // Virtual for author's full name
 AuthorSchema
-.virtual('name')
-.get(function () {
+  .virtual('name')
+  .get(function() {
 
-// To avoid errors in cases where an author does not have either a family name or first name
-// We want to make sure we handle the exception by returning an empty string for that case
+  // To avoid errors in cases where an author does not have either a family name or first name
+  // We want to make sure we handle the exception by returning an empty string for that case
 
-  let fullname = '';
-  if (this.first_name && this.family_name) {
-    fullname = this.family_name + ', ' + this.first_name
-  }
-  if (!this.first_name || !this.family_name) {
-    fullname = '';
-  }
+    let fullname = '';
+    if (this.first_name && this.family_name) {
+      fullname = this.family_name + ', ' + this.first_name
+    }
+    if (!this.first_name || !this.family_name) {
+      fullname = '';
+    }
 
-  return fullname;
-});
-
-// Virtual for author's lifespan
-// AuthorSchema
-//   .virtual('lifespan')
-//   .get(function() {
-//     return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString()
-//   });
+    return fullname;
+  });
 
 AuthorSchema
   .virtual('lifespan')
@@ -54,10 +47,22 @@ AuthorSchema
 
 // Virtual for author's URL
 AuthorSchema
-.virtual('url')
-.get(function () {
-  return '/catalog/author/' + this._id;
-});
+  .virtual('url')
+  .get(function () {
+    return '/catalog/author/' + this._id;
+  });
+
+AuthorSchema 
+  .virtual('date_of_birth_yyyy_mm_dd')
+  .get(function () {
+    return moment(this.date_of_birth).format('YYYY-MM-DD');
+  });
+
+AuthorSchema 
+  .virtual('date_of_death_yyyy_mm_dd')
+  .get(function () {
+    return moment(this.date_of_death).format('YYYY-MM-DD');
+  });
 
 //Export model
 module.exports = mongoose.model('Author', AuthorSchema);
