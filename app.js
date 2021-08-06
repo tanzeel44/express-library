@@ -1,3 +1,5 @@
+  
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -12,7 +14,7 @@ const catalogRouter = require('./routes/catalog');
 const app = express();
 
 const mongoose = require('mongoose');
-const mongoDB_dev_uri = 'mongodb+srv://admin:axeinhand444@cluster0.agog3.azure.mongodb.net/<dbname>?retryWrites=true&w=majority';
+const mongoDB_dev_uri = process.env.DB_URI;
 const mongoDB = process.env.MONGODB_URI || mongoDB_dev_uri;
 
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
